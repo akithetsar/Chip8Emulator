@@ -1,8 +1,11 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
-
+#include "../h/Chip8.h"
 int main() {sf::Clock clock; // starts the clock
+
+    Chip8::Instance()->loadRom("C:\\Users\\akith\\CLionProjects\\Chip8Emulator\\ROMS\\testRom.rom8");
+
 
 
     sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");

@@ -3,7 +3,9 @@ project(Chip8Emulator)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Chip8Emulator src/main.cpp)
+add_executable(Chip8Emulator src/main.cpp
+        h/Chip8.h
+        h/core.h)
 
 set(SFML_STATIC_LIBRARIES TRUE)
 set(SFML_DIR C:/SFML/lib/cmake/SFML)
