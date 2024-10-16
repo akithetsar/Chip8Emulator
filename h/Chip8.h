@@ -1,6 +1,8 @@
 //
 // Created by akith on 10/15/2024.
 //
+
+//todo: add rom extension checking(ex. .ch8)
 #include <cstdint>
 #include <fstream>
 #include <iostream>
@@ -19,6 +21,7 @@ public:
     }
 
     void loadRom(char const* path){
+
         std::ifstream file(path, std::ios::binary | std::ios::ate);
 
         if (!file) {
@@ -44,13 +47,19 @@ public:
             std::cerr << "Error: Could not read the entire ROM file." << std::endl;
         }
 
-        file.close();
 
     }
 
 
 protected:
     Chip8() : m_pc(PROGRAM_START_ADDR), m_sp(0) {
+
+        // Load fonts into memory
+        for (unsigned int i = 0; i < FONTSET_SIZE; ++i)
+        {
+            m_memory[FONTSET_START_ADDR + i] = fontset[i];
+        }
+
 
     }
 
@@ -70,8 +79,30 @@ private:
     uint32_t m_video[64 * 32]{};
     uint16_t m_opcode{};
 
-    static constexpr char ROM_EXTENSION[8] = "rom8\0\0\0";
+    static constexpr char ROM_EXTENSION[8] = "ch8";
     static constexpr unsigned int PROGRAM_START_ADDR = 0x200;
+
+    static constexpr unsigned int FONTSET_START_ADDR = 0x50;
+    static constexpr unsigned int FONTSET_SIZE = 80;
+    static constexpr uint8_t fontset[FONTSET_SIZE] =
+            {
+                    0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+                    0x20, 0x60, 0x20, 0x20, 0x70, // 1
+                    0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+                    0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+                    0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+                    0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+                    0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+                    0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+                    0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+                    0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+                    0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+                    0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+                    0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+                    0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+                    0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+                    0xF0, 0x80, 0xF0, 0x80, 0x80  // F
+            };
 };
 
 Chip8 *Chip8::m_instance = nullptr;

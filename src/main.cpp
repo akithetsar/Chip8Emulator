@@ -4,7 +4,7 @@
 #include "../h/Chip8.h"
 int main() {sf::Clock clock; // starts the clock
 
-    Chip8::Instance()->loadRom("C:\\Users\\akith\\CLionProjects\\Chip8Emulator\\ROMS\\testRom.rom8");
+    Chip8::Instance()->loadRom("C:\\Users\\akith\\CLionProjects\\Chip8Emulator\\ROMS\\Blitz [David Winter].ch8");
 
 
 
