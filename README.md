@@ -10,6 +10,17 @@ A fully functional Chip-8 emulator written in C/C++ with SDL3 for graphics and i
 - **Keyboard Input**: Full 16-key hexadecimal keypad support
 - **ROM Loading**: Load and run any Chip-8 ROM file
 
+## Examples
+
+#### Brick.ch8
+https://github.com/user-attachments/assets/32af07bc-8ae4-46f8-89b1-bc5935785a85
+
+
+#### Airplane.ch8
+https://github.com/user-attachments/assets/b6002edd-623b-4221-84a3-99f056ae827b
+
+
+
 ## Technical Specifications
 
 - **Memory**: 4KB RAM (4096 bytes)
