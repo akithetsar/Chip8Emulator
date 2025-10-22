@@ -1,18 +1,24 @@
-cmake_minimum_required(VERSION 3.24)
-project(Chip8Emulator)
+cmake_minimum_required(VERSION 3.16)
+project(Chip8Emulator LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(Chip8Emulator src/main.cpp
-        h/Chip8.h
-        h/Instruction.h
+set(SDL3_PATH "${CMAKE_SOURCE_DIR}/libs/x86_64-w64-mingw32")
+
+include_directories(${SDL3_PATH}/include)
+link_directories(${SDL3_PATH}/lib)
+
+add_executable(Chip8Emulator
+        src/main.cpp
+        src/Platform.cpp
+        src/Chip8.cpp  # Add if you have this
 )
 
-set(SFML_STATIC_LIBRARIES TRUE)
-set(SFML_DIR C:/SFML/lib/cmake/SFML)
-find_package(SFML COMPONENTS system window graphics audio network REQUIRED)
+target_link_libraries(Chip8Emulator SDL3)
 
-include_directories(C:/Project 3/SFML/include/SFML)
-include_directories(C:/SFML/include)
-
-target_link_libraries(Chip8Emulator sfml-system sfml-window sfml-graphics sfml-audio)
+add_custom_command(TARGET Chip8Emulator POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${SDL3_PATH}/bin/SDL3.dll"
+        $<TARGET_FILE_DIR:Chip8Emulator>
+)

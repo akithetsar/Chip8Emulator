@@ -1,43 +1,47 @@
-
+#include "../h/Chip8.hpp"
+#include "../h/Platform.hpp"
+#include <chrono>
 #include <iostream>
-#include <SFML/Graphics.hpp>
-#include "../h/Chip8.h"
-int main() {sf::Clock clock; // starts the clock
-
-    Chip8::Instance()->loadRom("C:\\Users\\akith\\CLionProjects\\Chip8Emulator\\ROMS\\Blitz [David Winter].ch8");
 
 
-
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    // run the program as long as the window is open
-    while (window.isOpen())
+int main(int argc, char** argv)
+{
+    if (argc != 4)
     {
-        // check all the window's events that were triggered since the last iteration of the loop
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            // "close requested" event: we close the window
-            if (event.type == sf::Event::Closed)
-                window.close();
+        std::cerr << "Usage: " << argv[0] << " <Scale> <Delay> <ROM>\n";
+        std::exit(EXIT_FAILURE);
+    }
 
-            if (event.type == sf::Event::KeyPressed)
-            {
-                if (event.key.scancode == sf::Keyboard::Scan::Escape)
-                {
-                    std::cout << "the escape key was pressed" << std::endl;
-                    std::cout << "scancode: " << event.key.scancode << std::endl;
-                    std::cout << "code: " << event.key.code << std::endl;
-                    std::cout << "control: " << event.key.control << std::endl;
-                    std::cout << "alt: " << event.key.alt << std::endl;
-                    std::cout << "shift: " << event.key.shift << std::endl;
-                    std::cout << "system: " << event.key.system << std::endl;
-                    std::cout << "description: " << sf::Keyboard::getDescription(event.key.scancode).toAnsiString() << std::endl;
-                    std::cout << "localize: " << sf::Keyboard::localize(event.key.scancode) << std::endl;
-                    std::cout << "delocalize: " << sf::Keyboard::delocalize(event.key.code) << std::endl;
-                }
-            }
+    int videoScale = std::stoi(argv[1]);
+    int cycleDelay = std::stoi(argv[2]);
+    char const* romFilename = argv[3];
+
+    Platform platform("CHIP-8 Emulator", VIDEO_WIDTH * videoScale, VIDEO_HEIGHT * videoScale, VIDEO_WIDTH, VIDEO_HEIGHT);
+
+    Chip8 chip8;
+    chip8.LoadROM(romFilename);
+
+    int videoPitch = sizeof(chip8.video[0]) * VIDEO_WIDTH;
+
+    auto lastCycleTime = std::chrono::high_resolution_clock::now();
+    bool quit = false;
+
+    while (!quit)
+    {
+        quit = platform.ProcessInput(chip8.keypad);
+
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        float dt = std::chrono::duration<float, std::chrono::milliseconds::period>(currentTime - lastCycleTime).count();
+
+        if (dt > cycleDelay)
+        {
+            lastCycleTime = currentTime;
+
+            chip8.Cycle();
+
+            platform.Update(chip8.video, videoPitch);
         }
     }
+
     return 0;
 }
-
